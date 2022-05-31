@@ -5,6 +5,7 @@ go 1.17
 require github.com/go-chi/chi/v5 v5.0.7
 
 require (
+
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
 	github.com/jackc/pgconn v1.12.1 // indirect
 	github.com/jackc/pgio v1.0.0 // indirect
@@ -15,4 +16,5 @@ require (
 	github.com/jackc/pgx/v4 v4.16.1 // indirect
 	github.com/lib/pq v1.10.6 // indirect
 	github.com/upper/db/v4 v4.5.2 // indirect
+	
 )
