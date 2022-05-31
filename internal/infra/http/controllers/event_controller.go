@@ -69,7 +69,7 @@ func (c *EventController) FindOne() http.HandlerFunc {
 
 func (c *EventController) Create() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == "GET" { // if the request method is get, json is returned with the fields to be filled
+		if r.Method == "GET" { // if the request method is get, json will be returned with the fields to be filled
 			data := event.Event{}
 			encoder := json.NewEncoder(w)
 			err := encoder.Encode(&data)
