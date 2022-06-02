@@ -3,10 +3,10 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/go-chi/chi/v5"
 	"net/http"
 	"strconv"
 
-	"github.com/go-chi/chi/v5"
 	"github.com/test_server/internal/domain/event"
 )
 
@@ -69,102 +69,73 @@ func (c *EventController) FindOne() http.HandlerFunc {
 
 func (c *EventController) Create() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == "GET" { // if the request method is get, json will be returned with the fields to be filled
-			data := event.Event{}
-			encoder := json.NewEncoder(w)
-			err := encoder.Encode(&data)
+
+		var data *event.Event
+		decoder := json.NewDecoder(r.Body)
+		err := decoder.Decode(&data)
+		if err != nil {
+			fmt.Printf("EventController.FindOne(): %s", err)
+			err = internalServerError(w, err)
 			if err != nil {
 				fmt.Printf("EventController.FindOne(): %s", err)
-				err = internalServerError(w, err)
-				if err != nil {
-					fmt.Printf("EventController.FindOne(): %s", err)
-				}
-				return
 			}
+			return
 		}
 
-		if r.Method == "POST" {
-			var data *event.Event
-			decoder := json.NewDecoder(r.Body)
-			err := decoder.Decode(&data)
-			if err != nil {
-				fmt.Printf("EventController.FindOne(): %s", err)
-				err = internalServerError(w, err)
-				if err != nil {
-					fmt.Printf("EventController.FindOne(): %s", err)
-				}
-				return
-			}
+		id := data.Id
+		name := data.Name
 
-			id := data.Id
-			name := data.Name
+		err2 := (*c.service).Create(id, name)
 
-			err2 := (*c.service).Create(id, name)
-
+		if err2 != nil {
+			fmt.Printf("EventController.Create(): %s", err)
+			err2 = internalServerError(w, err)
 			if err2 != nil {
 				fmt.Printf("EventController.Create(): %s", err)
-				err2 = internalServerError(w, err)
-				if err2 != nil {
-					fmt.Printf("EventController.Create(): %s", err)
-				}
-				return
 			}
-
-			err = success(w, "Created")
-			if err != nil {
-				fmt.Printf("EventController.Create(): %s", err)
-			}
+			return
 		}
+
+		err = success(w, "Created")
+		if err != nil {
+			fmt.Printf("EventController.Create(): %s", err)
+		}
+
 	}
 }
 
 func (c *EventController) Update() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == "GET" {
-			data := event.Event{}
-			encoder := json.NewEncoder(w)
-			err := encoder.Encode(&data)
+
+		var data *event.Event
+		decoder := json.NewDecoder(r.Body)
+		err := decoder.Decode(&data)
+		if err != nil {
+			fmt.Printf("EventController.Update(): %s", err)
+			err = internalServerError(w, err)
 			if err != nil {
 				fmt.Printf("EventController.Update(): %s", err)
-				err = internalServerError(w, err)
-				if err != nil {
-					fmt.Printf("EventController.Update(): %s", err)
-				}
-				return
 			}
+			return
 		}
 
-		if r.Method == "PUT" {
-			var data *event.Event
-			decoder := json.NewDecoder(r.Body)
-			err := decoder.Decode(&data)
-			if err != nil {
-				fmt.Printf("EventController.Update(): %s", err)
-				err = internalServerError(w, err)
-				if err != nil {
-					fmt.Printf("EventController.Update(): %s", err)
-				}
-				return
-			}
+		id := data.Id
+		name := data.Name
 
-			id := data.Id
-			name := data.Name
+		err2 := (*c.service).Update(id, name)
 
-			err2 := (*c.service).Update(id, name)
-
+		if err2 != nil {
+			fmt.Printf("EventController.Update(): %s", err)
+			err2 = internalServerError(w, err)
 			if err2 != nil {
 				fmt.Printf("EventController.Update(): %s", err)
-				err2 = internalServerError(w, err)
-				if err2 != nil {
-					fmt.Printf("EventController.Update(): %s", err)
-				}
-				return
 			}
+			return
+		}
 
-			err = success(w, "Updated")
-			if err != nil {
-				fmt.Printf("EventController.Update(): %s", err)
-			}
+		err = success(w, "Updated")
+		if err != nil {
+			fmt.Printf("EventController.Update(): %s", err)
 		}
 
 	}
@@ -172,50 +143,36 @@ func (c *EventController) Update() http.HandlerFunc {
 
 func (c *EventController) Delete() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == "GET" {
-			data := event.Event{}
-			encoder := json.NewEncoder(w)
-			err := encoder.Encode(&data)
+
+		var data *event.Event
+		decoder := json.NewDecoder(r.Body)
+		err := decoder.Decode(&data)
+		if err != nil {
+			fmt.Printf("EventController.Delete(): %s", err)
+			err = internalServerError(w, err)
 			if err != nil {
 				fmt.Printf("EventController.Delete(): %s", err)
-				err = internalServerError(w, err)
-				if err != nil {
-					fmt.Printf("EventController.Delete(): %s", err)
-				}
-				return
 			}
+			return
 		}
 
-		if r.Method == "DELETE" {
-			var data *event.Event
-			decoder := json.NewDecoder(r.Body)
-			err := decoder.Decode(&data)
-			if err != nil {
-				fmt.Printf("EventController.Delete(): %s", err)
-				err = internalServerError(w, err)
-				if err != nil {
-					fmt.Printf("EventController.Delete(): %s", err)
-				}
-				return
-			}
+		id := data.Id
+		name := data.Name
 
-			id := data.Id
-			name := data.Name
-
-			err2 := (*c.service).Delete(id, name)
+		err2 := (*c.service).Delete(id, name)
+		if err2 != nil {
+			fmt.Printf("EventController.Delete(): %s", err)
+			err2 = internalServerError(w, err)
 			if err2 != nil {
 				fmt.Printf("EventController.Delete(): %s", err)
-				err2 = internalServerError(w, err)
-				if err2 != nil {
-					fmt.Printf("EventController.Delete(): %s", err)
-				}
-				return
 			}
-
-			err2 = success(w, "Deleted")
-			if err != nil {
-				fmt.Printf("EventController.Delete(): %s", err)
-			}
+			return
 		}
+
+		err2 = success(w, "Deleted")
+		if err != nil {
+			fmt.Printf("EventController.Delete(): %s", err)
+		}
+
 	}
 }
