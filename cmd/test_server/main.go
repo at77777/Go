@@ -16,6 +16,7 @@ import (
 // @title                       Test Server
 // @version                     0.1.0
 // @description                 Test Server boilerplate
+
 func main() {
 	exitCode := 0
 	ctx, cancel := context.WithCancel(context.Background())
@@ -58,4 +59,5 @@ func main() {
 		exitCode = 2
 		return
 	}
+
 }

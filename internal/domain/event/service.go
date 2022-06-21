@@ -3,7 +3,7 @@ package event
 type Service interface {
 	FindAll() ([]Event, error)
 	FindOne(id int64) (*Event, error)
-	Create(id int64, name string) error
+	Create(event *Event) error
 	Update(id int64, name string) error
 	Delete(id int64, name string) error
 }
@@ -26,8 +26,8 @@ func (s *service) FindOne(id int64) (*Event, error) {
 	return (*s.repo).FindOne(id)
 }
 
-func (s *service) Create(id int64, name string) error {
-	return (*s.repo).Create(id, name)
+func (s *service) Create(event *Event) error {
+	return (*s.repo).Create(event)
 }
 
 func (s *service) Update(id int64, name string) error {

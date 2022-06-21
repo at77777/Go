@@ -8,7 +8,7 @@ import (
 type Repository interface {
 	FindAll() ([]Event, error)
 	FindOne(id int64) (*Event, error)
-	Create(id int64, name string) error
+	Create(event *Event) error
 	Update(id int64, name string) error
 	Delete(id int64, name string) error
 }
@@ -40,8 +40,11 @@ func (r *repository) FindAll() ([]Event, error) {
 	var events []Event
 
 	q, err := sess.SQL().Query(`SELECT * FROM events ORDER BY id`)
-	i := sess.SQL().NewIterator(q)
-	if err := i.All(&events); err != nil {
+	if err != nil {
+		log.Fatal("Query: ", err)
+	}
+	err = sess.SQL().NewIterator(q).All(&events)
+	if err != nil {
 		log.Fatal("Query: ", err)
 	}
 
@@ -58,8 +61,11 @@ func (r *repository) FindOne(id int64) (*Event, error) {
 	var event *Event
 
 	q, err := sess.SQL().Query(`SELECT * FROM events WHERE id = ($1)`, id)
-	i := sess.SQL().NewIterator(q)
-	if err := i.One(&event); err != nil {
+	if err != nil {
+		log.Fatal("Query: ", err)
+	}
+	err = sess.SQL().NewIterator(q).One(&event)
+	if err != nil {
 		log.Fatal("Query: ", err)
 	}
 
@@ -67,7 +73,7 @@ func (r *repository) FindOne(id int64) (*Event, error) {
 
 }
 
-func (r *repository) Create(id int64, name string) error {
+func (r *repository) Create(event *Event) error {
 
 	sess, err := postgresql.Open(settings)
 	if err != nil {
@@ -75,7 +81,7 @@ func (r *repository) Create(id int64, name string) error {
 	}
 	defer sess.Close()
 
-	_, err = sess.SQL().Exec(`INSERT INTO events (id, name) VALUES ($1, $2)`, id, name)
+	_, err = sess.SQL().Exec(`INSERT INTO events (id, name) VALUES ($1, $2)`, event.Id, event.Name)
 	if err != nil {
 		log.Fatal("Query: ", err)
 	}
